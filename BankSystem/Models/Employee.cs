@@ -4,7 +4,7 @@ namespace BankSystem.Models
     {
         public string Fio { get; set; }
 
-        public string PassNom { get; set; }
+        public string PassNum { get; set; }
 
         public string Position { get; set; }
     }

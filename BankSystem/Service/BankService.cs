@@ -6,7 +6,7 @@ namespace BankSystem.BankService
 {
     public class BankService
     {
-        List<Client> klients = new List<Client>();
+        List<Client> clients = new List<Client>();
         List<Employee> employes = new List<Employee>();
 
         public Employee FindEmployee(Employee person)
@@ -21,29 +21,53 @@ namespace BankSystem.BankService
 
         private IPerson Find<T>(T person) where T : IPerson
         {
-            if (person is Client)
-            {
-                foreach (var men in klients)
-                {
-                    if (men.PassNom == person.PassNom)
-                    {
-                        return men;
-                    }
-                }
-            }
-            
-            if (person is Employee)
-            {
+             if (person is Client)
+               {
+                return (Client)Find(person);
+               
+                /*
+                foreach (var men in clients)
+                   {
+                       if (men.PassNum == person.PassNum)
+                       {
+                           return men;
+                       }
+                   }
+                */
+               }
+
+               if (person is Employee)
+               {
+                return (Employee)Find(person);
+                /*
                 foreach (var men in employes)
-                {
-                    if (men.PassNom== person.PassNom)
-                    {
-                        return men;
-                    }
-                }
+                   {
+                       if (men.PassNum == person.PassNum)
+                       {
+                           return men;
+                       }
+                   }
+                */
+               }
+            
+            return default(T);     //  return null;    
+        }
+
+        private IPerson Add<T> (T person) where T :IPerson
+        {
+            if ((person is Client) && (!clients.Contains((Client) (IPerson) person)))
+            {
+                clients.Add((Client) (IPerson) person);
             }
 
-            return null;
+            if ((person is Employee) && (!employes.Contains((Employee)(IPerson) person)))
+            {
+                employes.Add((Employee) (IPerson) person);
+            }
+
+            return default(T);
+
         }
+
     }
 }

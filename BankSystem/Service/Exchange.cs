@@ -1,7 +1,14 @@
+using BankSystem.Service;
+using System;
+
 namespace BankSystem.BankService
 {
-    public class Exchange
+    public class Exchange :IExchange
     {
-        //public static decimal CurrencyConverter(Currency valin, decimal sumin, Currency valout) {  }
+        public double ConverterCurrency<O, T>(double sum, O originalcurrency, T targetcurrency) where O : ICurrency
+                                                                                      where T : ICurrency
+        {
+            return (Convert.ToDouble(sum) * originalcurrency.Rate / targetcurrency.Rate);
+        }
     }
 }
