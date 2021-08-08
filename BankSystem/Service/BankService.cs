@@ -10,7 +10,7 @@ namespace BankSystem.BankService
         List<Employee> employes = new List<Employee>();
 
         public Employee FindEmployee(Employee person)
-        {
+        { 
             return (Employee) Find(person);
         }
 
@@ -23,34 +23,15 @@ namespace BankSystem.BankService
         {
              if (person is Client)
                {
-                return (Client)Find(person);
-               
-                /*
-                foreach (var men in clients)
-                   {
-                       if (men.PassNum == person.PassNum)
-                       {
-                           return men;
-                       }
-                   }
-                */
+                return (IPerson) clients.Where(p => p.PassNum.Contains(person.PassNum));
                }
 
                if (person is Employee)
                {
-                return (Employee)Find(person);
-                /*
-                foreach (var men in employes)
-                   {
-                       if (men.PassNum == person.PassNum)
-                       {
-                           return men;
-                       }
-                   }
-                */
+                return (IPerson) employes.Where(p => p.PassNum.Contains(person.PassNum));
                }
             
-            return default(T);     //  return null;    
+            return default(T);     
         }
 
         private IPerson Add<T> (T person) where T :IPerson
