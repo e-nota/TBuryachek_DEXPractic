@@ -1,3 +1,5 @@
+using System;
+
 namespace BankSystem.Models
 {
     public class Employee : IPerson
@@ -5,6 +7,7 @@ namespace BankSystem.Models
         public string Fio { get; set; }
 
         public string PassNum { get; set; }
+        public int YearOfBirth { get; set; }
 
         public string Position { get; set; }
     }

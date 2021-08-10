@@ -1,7 +1,6 @@
-using BankSystem.Service;
 using System;
 
-namespace BankSystem.BankService
+namespace BankSystem.Service
 {
     public class Exchange :IExchange
     {

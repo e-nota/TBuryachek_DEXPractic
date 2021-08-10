@@ -1,8 +1,9 @@
 ﻿using BankSystem.Service;
 
-namespace BankSystem
+namespace BankSystem.Models
+
 {
-    class MDL : ICurrency
+    public class MDL : ICurrency
     {
         public double Rate { get; set; }
     }

@@ -1,3 +1,5 @@
+using System;
+
 namespace BankSystem.Models
 {
     public class Client:IPerson
@@ -5,5 +7,6 @@ namespace BankSystem.Models
         public string Fio { get; set; }
 
         public string PassNum { get; set; }
+        public int YearOfBirth { get; set; }
     }
 }
