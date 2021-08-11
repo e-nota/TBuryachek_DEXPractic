@@ -82,17 +82,24 @@ namespace BankSystem.Service
         {
             ICurrency cur1 = accountfrom.currency;
             ICurrency cur2 = accountto.currency;
-            double exchangesum = transferHandler.Invoke(Sum, cur1, cur2);
+            
             try
             {
-                  if (accountfrom.cash < exchangesum)
+                if (Sum < 0)
+                {
+                    throw new IncorrectSumException($"Sum for exchange is incorrect = {Sum}");
+                }
+                
+                if (accountfrom.cash < Sum) 
                 {
                     throw new InsufficientFundsException($"Account has Insufficient Funds: {accountfrom.currency} = {accountfrom.cash}, {accountto.currency} = {accountto.cash} ");
                 }
                 else
                 {
+                    double exchangesum = transferHandler.Invoke(Sum, cur1, cur2);
+
                     accountto.cash += exchangesum;
-                    accountfrom.cash -= exchangesum;
+                    accountfrom.cash -= Sum;
                     Console.WriteLine($"\nTransfer made. Balance now: {accountfrom.currency} = {accountfrom.cash}, {accountto.currency} = {accountto.cash} \n");
                 }
 
@@ -106,6 +113,43 @@ namespace BankSystem.Service
                 Console.WriteLine(E);
             }
         
+        }
+
+        public void FuncMoneyTransfer(double Sum, Account accountfrom, Account accountto, Func<double, ICurrency, ICurrency, double>  transferFunc)
+        {
+            ICurrency cur1 = accountfrom.currency;
+            ICurrency cur2 = accountto.currency;
+
+            try
+            {
+                if (Sum < 0)
+                {
+                    throw new IncorrectSumException($"Sum for exchange is incorrect = {Sum}");
+                }
+
+                if (accountfrom.cash < Sum)
+                {
+                    throw new InsufficientFundsException($"Account has Insufficient Funds: {accountfrom.currency} = {accountfrom.cash}, {accountto.currency} = {accountto.cash} ");
+                }
+                else
+                {
+                    double exchangesum = transferFunc(Sum, cur1, cur2);
+
+                    accountto.cash += exchangesum;
+                    accountfrom.cash -= Sum;
+                    Console.WriteLine($"\nTransfer made. Balance now: {accountfrom.currency} = {accountfrom.cash}, {accountto.currency} = {accountto.cash} \n");
+                }
+
+            }
+            catch (InsufficientFundsException E)
+            {
+                Console.WriteLine(E);
+            }
+            catch (Exception E)
+            {
+                Console.WriteLine(E);
+            }
+
         }
         //-----------------------
         public void AddClientAccount (Client newclient, Account newaccount)

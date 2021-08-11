@@ -50,9 +50,12 @@ namespace BankSystem
             var exchangeHandler = new BankService.ExchangeMessageHandler<ICurrency, ICurrency>(exch.ConverterCurrency);
 
             bankService.MoneyTransfer(1, account1lei, account1rub, exchangeHandler);
-            bankService.MoneyTransfer(20, account1lei, account1rub, exchangeHandler); // Exception
-            bankService.MoneyTransfer(1, account1lei, account1rub, exchangeHandler);
+            bankService.MoneyTransfer(100, account1lei, account1rub, exchangeHandler); // Exception
             bankService.MoneyTransfer(10, account1lei, account1rub, exchangeHandler);
+
+            Func<double, ICurrency, ICurrency, double> exchangefunc = exch.ConverterCurrency;
+            bankService.FuncMoneyTransfer(20, account1lei, account1rub, exchangefunc);
+            
 
             // ----------------
             Console.WriteLine("----------------------------------");
