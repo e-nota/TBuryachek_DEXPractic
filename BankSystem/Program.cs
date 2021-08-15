@@ -27,7 +27,7 @@ namespace BankSystem
             Account account2grn = new Account() { currency = grivna, cash = 10.5 };
             Account account3lei = new Account() { currency = lei, cash = 278 };
             Account account4rub = new Account() { currency = rubl, cash = 1000 };
-            Account account4dol = new Account() { currency = dol, cash = 50 };
+            Account account4dol = new Account() { currency = dol, cash = 70 };
             Account account5rub = new Account() { currency = rubl, cash = 1 };
 
             List<Account> account1 = new List<Account> { account1lei, account1rub, account1grn };
@@ -36,7 +36,7 @@ namespace BankSystem
             List<Account> account4 = new List<Account> { account4rub, account4dol};
             List<Account> account5 = new List<Account> { account5rub };
 
-            Dictionary<Client, List<Account>> ClientBalance = new Dictionary<Client, List<Account>>
+            Dictionary<Client, List<Account>> ClientsBalance = new Dictionary<Client, List<Account>>
             {
                 {client1, account1 },
                 {client2, account2 },
@@ -46,30 +46,47 @@ namespace BankSystem
             };
 
             var bankService = new BankService();
-            var exch = new Exchange();
-            var exchangeHandler = new BankService.ExchangeMessageHandler<ICurrency, ICurrency>(exch.ConverterCurrency);
+            /*            var exch = new Exchange();
+                        var exchangeHandler = new BankService.ExchangeMessageHandler<ICurrency, ICurrency>(exch.ConverterCurrency);
 
-            bankService.MoneyTransfer(1, account1lei, account1rub, exchangeHandler);
-            bankService.MoneyTransfer(100, account1lei, account1rub, exchangeHandler); // Exception
-            bankService.MoneyTransfer(10, account1lei, account1rub, exchangeHandler);
+                        bankService.MoneyTransfer(1, account1lei, account1rub, exchangeHandler);
+                        bankService.MoneyTransfer(100, account1lei, account1rub, exchangeHandler); // Exception
+                        bankService.MoneyTransfer(10, account1lei, account1rub, exchangeHandler);
 
-            Func<double, ICurrency, ICurrency, double> exchangefunc = exch.ConverterCurrency;
-            bankService.FuncMoneyTransfer(20, account1lei, account1rub, exchangefunc);
-            
+                        Func<double, ICurrency, ICurrency, double> exchangefunc = exch.ConverterCurrency;
+                        bankService.FuncMoneyTransfer(20, account1lei, account1rub, exchangefunc);
 
-            // ----------------
-            Console.WriteLine("----------------------------------");
-            Client newclient1 = new Client { Fio = "Tabakov", PassNum = "Q333", YearOfBirth = 1947 };
-            Account newaccount1 = new Account { currency = rubl, cash = 200 };
-            bankService.AddClientAccount(newclient1, newaccount1);
 
-            Client newclient2 = client3;
-            Account newaccount2 = account3lei;
-            bankService.AddClientAccount(newclient2, newaccount2);
+                        // ----------------
+                        Console.WriteLine("----------------------------------");
+                        Client newclient1 = new Client { Fio = "Tabakov", PassNum = "Q333", YearOfBirth = 1947 };
+                        Account newaccount1 = new Account { currency = rubl, cash = 200 };
+                        bankService.AddClientAccount(newclient1, newaccount1);
 
-            bankService.AddClientAccount(newclient2, newaccount2);
-            
-            bankService.AddClientAccount(newclient2, newaccount1);
+                        Client newclient2 = client3;
+                        Account newaccount2 = account3lei;
+                        bankService.AddClientAccount(newclient2, newaccount2);
+
+                        bankService.AddClientAccount(newclient2, newaccount2);
+
+                        bankService.AddClientAccount(newclient2, newaccount1);
+                        //--
+            */
+            Client newclienttxt1 = new Client { Fio = "Petrov", PassNum = "Q555", YearOfBirth = 1947 };
+            Client newclienttxt2 = new Client { Fio = "Komov", PassNum = "Q333", YearOfBirth = 2000 };
+            /*           
+                       bankService.AddClient(newclienttxt1);
+                       bankService.AddClient(newclienttxt1);
+                      bankService.AddClient(newclienttxt2);
+
+                       Employee newemployee1 = new Employee { Fio = "Astahov", PassNum = "Q111", YearOfBirth = 1995, Position = "Specialist" };
+                       Employee newemployee2 = new Employee { Fio = "Ovsov", PassNum = "Q222", YearOfBirth = 2001, Position = "Specialist" };
+                       bankService.AddEmployee(newemployee1);
+                       bankService.AddEmployee(newemployee2);
+           */
+
+            bankService.AddClientAccount(newclienttxt1, account1rub);
+            bankService.AddClientAccount(newclienttxt2, account4dol);
 
 
             //--------------
