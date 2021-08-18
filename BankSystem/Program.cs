@@ -2,6 +2,8 @@
 using BankSystem.Service;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace BankSystem
 {
@@ -35,7 +37,7 @@ namespace BankSystem
             List<Account> account3 = new List<Account> { account3lei };
             List<Account> account4 = new List<Account> { account4rub, account4dol};
             List<Account> account5 = new List<Account> { account5rub };
-
+/*
             Dictionary<Client, List<Account>> ClientsBalance = new Dictionary<Client, List<Account>>
             {
                 {client1, account1 },
@@ -44,6 +46,16 @@ namespace BankSystem
                 {client4, account4 },
                 {client5, account5 }
             };
+*/
+            Dictionary<string, List<Account>> ClientsBalance = new Dictionary<string, List<Account>>
+            {
+                {client1.PassNum, account1 },
+                {client2.PassNum, account2 },
+                {client3.PassNum, account3 },
+                {client4.PassNum, account4 },
+                {client5.PassNum, account5 }
+            };
+
 
             var bankService = new BankService();
             /*            var exch = new Exchange();
@@ -87,8 +99,24 @@ namespace BankSystem
 
             bankService.AddClientAccount(newclienttxt1, account1rub);
             bankService.AddClientAccount(newclienttxt2, account4dol);
+//
+
+            var serClients = JsonConvert.SerializeObject(ClientsBalance);
+            bankService.WriteTextToFile(serClients, "SerDirectoryClients.txt");
+
+            //bankService.ReadClientFromFile("SerDirectoryClients.txt");
+            string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
+
+            using (FileStream fileStream = new FileStream($"{path}\\SerDirectoryClients.txt", FileMode.Open))
+            {
+
+                byte[] array = new byte[fileStream.Length];
+                fileStream.Read(array, 0, array.Length);
+                string text = System.Text.Encoding.Default.GetString(array);
 
 
+                Dictionary<string, List<Account>> desClients = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+            }
             //--------------
             /* double sum = 100;
              Exchange ex = new Exchange();

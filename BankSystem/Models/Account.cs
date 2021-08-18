@@ -5,7 +5,7 @@ namespace BankSystem.Models
 {
     public class Account
     {
-        public ICurrency currency { get; set; } 
+        public Currency currency { get; set; } 
         public double cash { get; set;  }
 
         public override bool Equals(object obj)

@@ -1,0 +1,1 @@
+{"Q123":[{"currency":{"Rate":1.1},"cash":100.0},{"currency":{"Rate":0.2},"cash":50.0},{"currency":{"Rate":0.65},"cash":200.0}],"Q124":[{"currency":{"Rate":0.65},"cash":10.5}],"Q125":[{"currency":{"Rate":1.1},"cash":278.0}],"Q126":[{"currency":{"Rate":0.2},"cash":1000.0},{"currency":{"Rate":16.0},"cash":70.0}],"Q127":[{"currency":{"Rate":0.2},"cash":1.0}]}

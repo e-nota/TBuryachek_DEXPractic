@@ -1,9 +1,8 @@
 ﻿using BankSystem.Service;
-using BankSystem.Models;
 
-namespace BankSystem
+namespace BankSystem.Models
 {
-    public class UAH : Currency
+    public class Currency : ICurrency
     {
         public double Rate { get; set; }
     }

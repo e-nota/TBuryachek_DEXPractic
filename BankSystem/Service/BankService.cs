@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using BankSystem.Exceptions;
 using BankSystem.Models;
-
+using Newtonsoft.Json;
 
 namespace BankSystem.Service
 
@@ -13,7 +13,7 @@ namespace BankSystem.Service
     {
         List<Client> clients = new List<Client>();
         List<Employee> employes = new List<Employee>();
-        Dictionary<Client, List<Account>> clientsaccounts = new Dictionary<Client, List<Account>>();
+        Dictionary<string, List<Account>> clientsaccounts = new Dictionary<string, List<Account>>();
 
         List<Client> clientsFromFile = new List<Client>();
         List<Account> accountsFromFile = new List<Account>();
@@ -74,7 +74,7 @@ namespace BankSystem.Service
                 {
                     clients.Add((Client)(IPerson)person);
 
-                    text =  person.Fio + "," + person.PassNum + "," + person.YearOfBirth + "|";
+                    text = JsonConvert.SerializeObject(clients);
                     WriteTextToFile(text, "Clients.txt");
 
                 }
@@ -83,7 +83,7 @@ namespace BankSystem.Service
                 {
                     employes.Add((Employee)(IPerson)person);
 
-                    text =   person.Fio + "," + person.PassNum + "," + person.YearOfBirth + "|";
+                    text = JsonConvert.SerializeObject(employes);
                     WriteTextToFile(text, "Employee.txt");
                 }
 
@@ -111,13 +111,11 @@ namespace BankSystem.Service
                 directoryInfo.Create();
             }
 
-            using (FileStream fileStream = new FileStream($"{path}\\{filename}", FileMode.Append))
+            using (FileStream fileStream = new FileStream($"{path}\\{filename}", FileMode.Create))
             {
                 byte[] array = System.Text.Encoding.Default.GetBytes(texttowrite);
                 fileStream.Write(array, 0, array.Length);
             }
-
-
         }
 
         // ----------------
@@ -200,9 +198,9 @@ namespace BankSystem.Service
         //-----------------------
         public void AddClientAccount (Client newclient, Account newaccount)
         {
-          if (clientsaccounts.ContainsKey(newclient))  // New client is exist in dictionary clients
+          if (clientsaccounts.ContainsKey(newclient.PassNum))  // New client is exist in dictionary clients
             {
-                List<Account> accountexist = clientsaccounts[newclient];
+                List<Account> accountexist = clientsaccounts[newclient.PassNum];
 
                 if (accountexist.Contains(newaccount))
                 {
@@ -211,7 +209,7 @@ namespace BankSystem.Service
                 else
                 {
                     accountexist.Add(newaccount);
-                    clientsaccounts[newclient] = accountexist;
+                    clientsaccounts[newclient.PassNum] = accountexist;
                     Console.WriteLine("New account for exist client added");
                 }
             }
@@ -219,146 +217,41 @@ namespace BankSystem.Service
             {   
                 List<Account> accounts = new List<Account>();
                 accounts.Add(newaccount);
-                clientsaccounts.Add(newclient, accounts);
+                clientsaccounts.Add(newclient.PassNum, accounts);
 
-                //
-                string text = newclient.Fio + "," + newclient.PassNum + "," + newclient.YearOfBirth + "/";
-                text += newaccount.currency + "," + newaccount.cash + "|";
-                WriteTextToFile(text, "DirectoryClients.txt");
-                //
-                ReadClientFromFile("DirectoryClients.txt");
-                //
+           
 
                 Console.WriteLine("New client added");
             }
+            var serClientAcc = JsonConvert.SerializeObject(clientsaccounts);
+            WriteTextToFile(serClientAcc, "DirectoryClients.txt");
         }
 
         public void ReadClientFromFile (string filename)
         {
             string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
 
+            string text;
+
             using (FileStream fileStream = new FileStream($"{path}\\{filename}", FileMode.Open))
             {
+             
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
-                string text = System.Text.Encoding.Default.GetString(array);
-
-                int count = text.Split("|").Length-1;
-                string [] strlistclients = new string [count];
-                strlistclients = text.Split("|");
-
-                Client client = new Client();
-                Account account = new Account();
-                string[] strdataclient = new string[3];
-                string[] strdataaccount = new string[2];
-
-                for (int i = 0; i < count; i++)
-                
-                {
-                  //  Console.WriteLine(strlistclients[i]);
-
-                    int count1 = strlistclients[i].Split("/").Length;
-                    string[] str1 = new string[count1];
-                    str1 = strlistclients[i].Split("/");
-
-                    for (int j = 0; j < count1; j++)
-                    {
-                        string[] strclients = new string[count1/2];
-                        string[] straccounts = new string[count1 / 2];
-
-                        if (j == 0 || j % 2 == 0)
-                        {
-                            for (int k = 0; k < count1 / 2; k++)
-                            {
-                                strclients[k] = str1[j];
-                              //  Console.WriteLine(strclients[k]);
-                                
-                                strdataclient = strclients[k].Split(",");
-                           }
-                        }
-                        else
-                        {
-                            for (int p = 0; p < count1 / 2; p++)
-                            {
-                                straccounts[p] = str1[j];
-                             //   Console.WriteLine(straccounts[p]);
-                                
-                                strdataaccount = straccounts[p].Split(",");
-                            }
-                        }
-
-                        for (int q = 0; q < 3; q++)
-                        {
-                            switch (q)
-                            {
-                                case 0:
-                                    client.Fio = strdataclient[q];
-                                    break;
-                                case 1:
-                                    client.PassNum = strdataclient[q];
-                                    break;
-                                case 2:
-                                    client.YearOfBirth = Convert.ToInt32(strdataclient[q]);
-                                    break;
-                                 default:
-                                    break;
-                            }
-
-                            for (int t = 0; t < 2; t++)
-                            {
-                                switch (t)
-                                {
-                                    case 0:
-                                        if (strdataaccount[t] == "BankSystem.Service.RUB")
-                                        {
-                                            account.currency = new RUB();
-                                        }
-                                        else if (strdataaccount[t] == "BankSystem.Service.USD")
-                                        {
-                                            account.currency = new USD();
-                                        }
-                                        else if (strdataaccount[t] == "BankSystem.Service.UAH")
-                                        {
-                                            account.currency = new UAH();
-                                        }
-                                        else if (strdataaccount[t] == "BankSystem.Service.MDL")
-                                        {
-                                            account.currency = new MDL();
-                                        }
-                                        break;
-                                        
-                                    case 1:
-                                        account.cash = Convert.ToDouble(strdataaccount[t]);
-                                        break;
-                                    default:
-                                             break;
-
-                                }
-                            }
-                        }
-
-                        if (clientsaccFromFile.ContainsKey(client))  
-                        {
-                            List<Account> accountexist = clientsaccFromFile[client];
-
-                            if (!accountexist.Contains(account))
-                            {
-                                accountexist.Add(account);
-                                clientsaccFromFile[client] = accountexist;
-                            }
-                        }
-                        else 
-                        {
-                            List<Account> accounts = new List<Account>();
-                            accounts.Add(account);
-                            clientsaccFromFile.Add(client, accounts);
-                        }
-                    }
-                }
-
+                text = System.Text.Encoding.Default.GetString(array);
             }
-
-           
+            if (filename == "DirectoryClients.txt")
+            {
+                clientsaccounts = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+            }
+            if (filename == "Clients.txt")
+            {
+                clients = JsonConvert.DeserializeObject<List<Client>>(text);
+            }
+            if (filename == "Employee.txt")
+            {
+                employes = JsonConvert.DeserializeObject<List<Employee>>(text);
+            }
 
         }
 
