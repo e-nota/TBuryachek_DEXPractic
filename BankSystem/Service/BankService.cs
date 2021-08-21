@@ -11,6 +11,9 @@ namespace BankSystem.Service
 {
     public class BankService
     {
+        public delegate double ExchangeMessageHandler<O, T>(double sum, O currencyfrom, T currencyto) where O : ICurrency
+                                                                                      where T : ICurrency;
+
         List<Client> clients = new List<Client>();
         List<Employee> employes = new List<Employee>();
         Dictionary<string, List<Account>> clientsaccounts = new Dictionary<string, List<Account>>();
@@ -18,8 +21,9 @@ namespace BankSystem.Service
         List<Client> clientsFromFile = new List<Client>();
         List<Account> accountsFromFile = new List<Account>();
         List<Employee> employesFromFile = new List<Employee>();
-        Dictionary<Client, List<Account>> clientsaccFromFile = new Dictionary<Client, List<Account>>();
+        Dictionary<string, List<Account>> clientsaccFromFile = new Dictionary<string, List<Account>>();
 
+        
         public Employee FindEmployee(Employee person)
         { 
             return (Employee) Find(person);
@@ -69,25 +73,25 @@ namespace BankSystem.Service
                 {
                     throw new UnderageException($"User {person.YearOfBirth} year of birth. User registration prohibited!");
                 }
-                
-                if ((person is Client) && (!clients.Contains((Client)(IPerson)person)))
-                {
-                    clients.Add((Client)(IPerson)person);
 
-                    text = JsonConvert.SerializeObject(clients);
+                ReadClientFromFile("Clients.txt");
+                if ((person is Client) && (!clientsFromFile.Contains((Client)(IPerson)person)))
+                {
+                    clientsFromFile.Add((Client)(IPerson)person);
+
+                    text = JsonConvert.SerializeObject(clientsFromFile);
                     WriteTextToFile(text, "Clients.txt");
-
                 }
 
-                if ((person is Employee) && (!employes.Contains((Employee)(IPerson)person)))
+                ReadClientFromFile("Employee.txt");
+                if ((person is Employee) && (!employesFromFile.Contains((Employee)(IPerson)person)))
                 {
-                    employes.Add((Employee)(IPerson)person);
+                    employesFromFile.Add((Employee)(IPerson)person);
 
-                    text = JsonConvert.SerializeObject(employes);
+                    text = JsonConvert.SerializeObject(employesFromFile);
                     WriteTextToFile(text, "Employee.txt");
-                }
-
-            }
+                }    
+             }
             catch (UnderageException E)
             {
                 Console.WriteLine(E);
@@ -102,7 +106,6 @@ namespace BankSystem.Service
 
         public void WriteTextToFile(string texttowrite, string filename)
         {
-
             string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
@@ -118,9 +121,6 @@ namespace BankSystem.Service
             }
         }
 
-        // ----------------
-        public delegate double ExchangeMessageHandler<O, T>(double sum, O currencyfrom, T currencyto) where O : ICurrency
-                                                                                      where T : ICurrency;
 
         public void MoneyTransfer(double Sum, Account accountfrom, Account accountto, ExchangeMessageHandler<ICurrency, ICurrency> transferHandler)
         {
@@ -218,8 +218,7 @@ namespace BankSystem.Service
                 List<Account> accounts = new List<Account>();
                 accounts.Add(newaccount);
                 clientsaccounts.Add(newclient.PassNum, accounts);
-
-           
+        
 
                 Console.WriteLine("New client added");
             }
@@ -227,30 +226,42 @@ namespace BankSystem.Service
             WriteTextToFile(serClientAcc, "DirectoryClients.txt");
         }
 
-        public void ReadClientFromFile (string filename)
+        public void ReadClientFromFile(string filename)
         {
             string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
 
             string text;
 
-            using (FileStream fileStream = new FileStream($"{path}\\{filename}", FileMode.Open))
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            if (!directoryInfo.Exists)
             {
-             
-                byte[] array = new byte[fileStream.Length];
-                fileStream.Read(array, 0, array.Length);
-                text = System.Text.Encoding.Default.GetString(array);
+                directoryInfo.Create();
             }
-            if (filename == "DirectoryClients.txt")
+            FileInfo fileInfo = new FileInfo($"{path}\\{filename}");
+            if (fileInfo.Exists)
             {
-                clientsaccounts = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+                using (FileStream fileStream = new FileStream($"{path}\\{filename}", FileMode.Open))
+                {
+                    byte[] array = new byte[fileStream.Length];
+                    fileStream.Read(array, 0, array.Length);
+                    text = System.Text.Encoding.Default.GetString(array);
+                }
+                if (filename == "DirectoryClients.txt")
+                {
+                    clientsaccFromFile = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+                }
+                if (filename == "Clients.txt")
+                {
+                    clientsFromFile = JsonConvert.DeserializeObject<List<Client>>(text);
+                }
+                if (filename == "Employee.txt")
+                {
+                    employesFromFile = JsonConvert.DeserializeObject<List<Employee>>(text);
+                }
             }
-            if (filename == "Clients.txt")
+            else
             {
-                clients = JsonConvert.DeserializeObject<List<Client>>(text);
-            }
-            if (filename == "Employee.txt")
-            {
-                employes = JsonConvert.DeserializeObject<List<Employee>>(text);
+                //Console.WriteLine($"File {filename} do not exist!");
             }
 
         }

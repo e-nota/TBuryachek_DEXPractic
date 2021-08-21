@@ -56,74 +56,40 @@ namespace BankSystem
                 {client5.PassNum, account5 }
             };
 
-
+            FileExportService fileExportServ = new FileExportService();
+            fileExportServ.FileExport(client1);
+  
             var bankService = new BankService();
-            /*            var exch = new Exchange();
-                        var exchangeHandler = new BankService.ExchangeMessageHandler<ICurrency, ICurrency>(exch.ConverterCurrency);
+ 
+            Client newclienttxt1 = new Client { Fio = "Petrov1", PassNum = "Q555", YearOfBirth = 1947 };
+            Client newclienttxt2 = new Client { Fio = "Komov", PassNum = "Q666", YearOfBirth = 2000 };
+            //     bankService.AddClientAccount(newclienttxt1, account1rub);
+            //     bankService.AddClientAccount(newclienttxt2, account4dol);
 
-                        bankService.MoneyTransfer(1, account1lei, account1rub, exchangeHandler);
-                        bankService.MoneyTransfer(100, account1lei, account1rub, exchangeHandler); // Exception
-                        bankService.MoneyTransfer(10, account1lei, account1rub, exchangeHandler);
+                 bankService.AddClient(newclienttxt1);
+                 bankService.AddClient(newclienttxt2);
+        /*    List<Client> newClients = new List<Client>();
+            newClients.Add(newclienttxt1);
+            newClients.Add(newclienttxt2);
 
-                        Func<double, ICurrency, ICurrency, double> exchangefunc = exch.ConverterCurrency;
-                        bankService.FuncMoneyTransfer(20, account1lei, account1rub, exchangefunc);
+            var serClients = JsonConvert.SerializeObject(newClients); // (ClientsBalance);
+            bankService.WriteTextToFile(serClients, "Clients.txt");
 
+                        //bankService.ReadClientFromFile("SerDirectoryClients.txt");
+                        //
+                        
+                        string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
+                        using (FileStream fileStream = new FileStream($"{path}\\SerDirectoryClients.txt", FileMode.Open))
+                        {
 
-                        // ----------------
-                        Console.WriteLine("----------------------------------");
-                        Client newclient1 = new Client { Fio = "Tabakov", PassNum = "Q333", YearOfBirth = 1947 };
-                        Account newaccount1 = new Account { currency = rubl, cash = 200 };
-                        bankService.AddClientAccount(newclient1, newaccount1);
-
-                        Client newclient2 = client3;
-                        Account newaccount2 = account3lei;
-                        bankService.AddClientAccount(newclient2, newaccount2);
-
-                        bankService.AddClientAccount(newclient2, newaccount2);
-
-                        bankService.AddClientAccount(newclient2, newaccount1);
-                        //--
-            */
-            Client newclienttxt1 = new Client { Fio = "Petrov", PassNum = "Q555", YearOfBirth = 1947 };
-            Client newclienttxt2 = new Client { Fio = "Komov", PassNum = "Q333", YearOfBirth = 2000 };
-            /*           
-                       bankService.AddClient(newclienttxt1);
-                       bankService.AddClient(newclienttxt1);
-                      bankService.AddClient(newclienttxt2);
-
-                       Employee newemployee1 = new Employee { Fio = "Astahov", PassNum = "Q111", YearOfBirth = 1995, Position = "Specialist" };
-                       Employee newemployee2 = new Employee { Fio = "Ovsov", PassNum = "Q222", YearOfBirth = 2001, Position = "Specialist" };
-                       bankService.AddEmployee(newemployee1);
-                       bankService.AddEmployee(newemployee2);
-           */
-
-            bankService.AddClientAccount(newclienttxt1, account1rub);
-            bankService.AddClientAccount(newclienttxt2, account4dol);
-//
-
-            var serClients = JsonConvert.SerializeObject(ClientsBalance);
-            bankService.WriteTextToFile(serClients, "SerDirectoryClients.txt");
-
-            //bankService.ReadClientFromFile("SerDirectoryClients.txt");
-            string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
-
-            using (FileStream fileStream = new FileStream($"{path}\\SerDirectoryClients.txt", FileMode.Open))
-            {
-
-                byte[] array = new byte[fileStream.Length];
-                fileStream.Read(array, 0, array.Length);
-                string text = System.Text.Encoding.Default.GetString(array);
+                            byte[] array = new byte[fileStream.Length];
+                            fileStream.Read(array, 0, array.Length);
+                            string text = System.Text.Encoding.Default.GetString(array);
 
 
-                Dictionary<string, List<Account>> desClients = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
-            }
-            //--------------
-            /* double sum = 100;
-             Exchange ex = new Exchange();
-             double convertsum = ex.ConverterCurrency<USD, RUB>(sum, dol, rubl);
-             Console.WriteLine($"Convert sum (sum = {sum}, rate usd = {dol.Rate}, rub = {rubl.Rate}) = {convertsum}");
-            */
-            //----------------
+                            Dictionary<string, List<Account>> desClients = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+                        }
+              */
         }
 
     }
