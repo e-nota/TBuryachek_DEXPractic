@@ -5,6 +5,6 @@ namespace BankSystem.Service
 {
     public class USD : Currency
     {
-        public double Rate { get; set; }
+       // public double Rate { get; set; }
     }
 }
