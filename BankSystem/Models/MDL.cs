@@ -6,6 +6,6 @@ namespace BankSystem.Models
 {
     public class MDL : Currency
     {
-        public double Rate { get; set; }
+       // public double Rate { get; set; }
     }
 }

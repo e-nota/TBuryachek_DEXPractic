@@ -4,17 +4,18 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BankSystem
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            MDL lei = new MDL() { Rate = 1.1 };
-            RUB rubl = new RUB() { Rate = 0.2 };
-            UAH grivna = new UAH() { Rate = 0.65 };
-            USD dol = new USD() { Rate = 16 };
+            MDL lei = new MDL() { Rate = 1.1 , Name = "MDL"};
+            RUB rubl = new RUB() { Rate = 0.2 , Name = "RUB"};
+            UAH grivna = new UAH() { Rate = 0.65, Name = "UAH"};
+            USD dol = new USD() { Rate = 16, Name = "USD"};
 
             Client client1 = new Client() { Fio = "Ivanov", PassNum = "Q123", YearOfBirth = 1991 };
             Client client2 = new Client() { Fio = "Petrov", PassNum = "Q124", YearOfBirth = 1998 };
@@ -68,29 +69,38 @@ namespace BankSystem
 
                  bankService.AddClient(newclienttxt1);
                  bankService.AddClient(newclienttxt2);
-        /*    List<Client> newClients = new List<Client>();
-            newClients.Add(newclienttxt1);
-            newClients.Add(newclienttxt2);
+            /*    List<Client> newClients = new List<Client>();
+                newClients.Add(newclienttxt1);
+                newClients.Add(newclienttxt2);
 
-            var serClients = JsonConvert.SerializeObject(newClients); // (ClientsBalance);
-            bankService.WriteTextToFile(serClients, "Clients.txt");
+                var serClients = JsonConvert.SerializeObject(newClients); // (ClientsBalance);
+                bankService.WriteTextToFile(serClients, "Clients.txt");
 
-                        //bankService.ReadClientFromFile("SerDirectoryClients.txt");
-                        //
-                        
-                        string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
-                        using (FileStream fileStream = new FileStream($"{path}\\SerDirectoryClients.txt", FileMode.Open))
-                        {
+                            //bankService.ReadClientFromFile("SerDirectoryClients.txt");
+                            //
 
-                            byte[] array = new byte[fileStream.Length];
-                            fileStream.Read(array, 0, array.Length);
-                            string text = System.Text.Encoding.Default.GetString(array);
+                            string path = Path.Combine("d:", "Courses", "TBuryachek_DEXPractic", "BankSystem", "Files");
+                            using (FileStream fileStream = new FileStream($"{path}\\SerDirectoryClients.txt", FileMode.Open))
+                            {
+
+                                byte[] array = new byte[fileStream.Length];
+                                fileStream.Read(array, 0, array.Length);
+                                string text = System.Text.Encoding.Default.GetString(array);
 
 
-                            Dictionary<string, List<Account>> desClients = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
-                        }
-              */
+                                Dictionary<string, List<Account>> desClients = JsonConvert.DeserializeObject<Dictionary<string, List<Account>>>(text);
+                            }
+                  */
+
+            //Получение курсов валют онлайн
+
+            // "status":200,"message":"rates","data":{ "USDRUB":"64.1824"} 
+            Exchange exchange = new Exchange();
+            decimal convertSum = await exchange.ConverterCurrencyOnlineAsync(10, dol, rubl);
+            Console.WriteLine($"Convert 10 USD to RUB: {convertSum.ToString()} RUB");
+            decimal convertSum1 = await exchange.ConverterCurrencyOnlineAsync(10, rubl, dol);
+            Console.WriteLine($"Convert 10 RUB to USD: {convertSum1.ToString()} USD");
+
         }
-
     }
 }
